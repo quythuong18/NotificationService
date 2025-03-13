@@ -1,5 +1,7 @@
 package com.qt.NotificationService.websocket;
 
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
@@ -9,14 +11,20 @@ import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
 @Configuration
 @EnableWebSocket
+@RequiredArgsConstructor
 public class WebSocketConfig implements WebSocketConfigurer {
-    @Bean
-    public ServerEndpointExporter serverEndpointExporter() {
-        return new ServerEndpointExporter();
-    }
+    private final WSHandler wsHandler;
+    private final WSKeyAuthInterceptor wsKeyAuthInterceptor;
+
+//    @Bean
+//    public ServerEndpointExporter serverEndpointExporter() {
+//        return new ServerEndpointExporter();
+//    }
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        // add the custom before hand shake here
+        registry.addHandler(wsHandler, "/ws")
+                .setAllowedOrigins("*")
+                .addInterceptors(wsKeyAuthInterceptor);
     }
 }
