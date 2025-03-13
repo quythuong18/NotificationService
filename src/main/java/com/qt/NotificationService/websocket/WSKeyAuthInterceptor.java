@@ -2,6 +2,7 @@ package com.qt.NotificationService.websocket;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpRequest;
@@ -36,6 +37,7 @@ public class WSKeyAuthInterceptor implements HandshakeInterceptor {
             }
         }
         LOGGER.warn("Invalid before WS hand shake");
+        response.setStatusCode(HttpStatus.UNAUTHORIZED);
         return false;
     }
 
