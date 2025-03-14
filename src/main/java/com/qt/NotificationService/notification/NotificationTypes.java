@@ -1,4 +1,4 @@
-package com.qt.NotificationService;
+package com.qt.NotificationService.notification;
 
 public enum NotificationTypes {
     NEW_VIDEO,

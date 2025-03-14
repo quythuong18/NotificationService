@@ -32,11 +32,11 @@ public class WSKeyAuthInterceptor implements HandshakeInterceptor {
                 String username = query.split("username=")[1].split("&")[0];
                 attributes.put("authenticated", true);
                 attributes.put("username", username);
-                LOGGER.info("Valid before WS hand shake");
+                LOGGER.info("Valid sent key before WS hand shake");
                 return true;
             }
         }
-        LOGGER.warn("Invalid before WS hand shake");
+        LOGGER.warn("Invalid sent key before WS hand shake");
         response.setStatusCode(HttpStatus.UNAUTHORIZED);
         return false;
     }

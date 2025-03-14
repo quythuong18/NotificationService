@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: NotificationService
+# MongoDB connection
+  data:
+    mongodb:
+      uri: mongodb+srv://quythuong:rgaVxTGFcjdFu4Vc@cluster0.djxypwz.mongodb.net/
+      port: '27017'
+      database: notification_service
+
+logging:
+  level:
+    org:
+      springframework:
+      web:
+        socket: DEBUG
+        messaging: DEBUG
+
+rabbitmq:
+  queue:
+    name: notification.queue
+  exchange:
+    name: videoplatform.topic.exchange
+  routing:
+    key: notification_routing_key
