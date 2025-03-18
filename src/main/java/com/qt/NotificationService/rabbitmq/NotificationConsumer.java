@@ -1,6 +1,5 @@
 package com.qt.NotificationService.rabbitmq;
 
-import com.qt.NotificationService.notification.Notification;
 import com.qt.NotificationService.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -14,7 +13,8 @@ public class NotificationConsumer {
     private static final Logger LOGGER = LoggerFactory.getLogger(NotificationConsumer.class);
     private final NotificationService notificationService;
 
-    @RabbitListener(queues = {"$rabbitmq.queue.name"})
-    public void consumeMessage(Notification noti) {
+    @RabbitListener(queues = "${rabbitmq.queue.name}")
+    public void consumeMessage(String message) {
+        LOGGER.info("Received message: {}", message);
     }
 }

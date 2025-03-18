@@ -1,4 +1,4 @@
-package com.qt.NotificationService.Utils;
+package com.qt.NotificationService.utils;
 
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;

@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
@@ -18,7 +17,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class WSHandler extends TextWebSocketHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(WSHandler.class);
     private static final Map<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
-    private final ObjectMapper objectMapper = new ObjectMapper(); // this is json converter
     private String username;
 
     @Override
@@ -47,12 +45,11 @@ public class WSHandler extends TextWebSocketHandler {
             exception.getMessage());
     }
 
-    public Boolean sendMessageToUser(String username, WebSocketMessage<?> message) {
+    public Boolean sendMessageToUser(String username, TextMessage message) {
         WebSocketSession session = sessions.get(username);
         if(session != null && session.isOpen()) {
             try {
-                String jsonMessage = objectMapper.writeValueAsString(message.getPayload());
-                session.sendMessage(new TextMessage(jsonMessage));
+                session.sendMessage(message);
             } catch (IOException e) {
                 LOGGER.error(e.getMessage());
                 return false;

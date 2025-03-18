@@ -1,6 +1,6 @@
 package com.qt.NotificationService.notification;
 
-import com.qt.NotificationService.Utils.TimeAudit;
+import com.qt.NotificationService.utils.TimeAudit;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,7 +18,8 @@ public class NotificationMessage extends TimeAudit {
     private String fromUsername;
     private String toUsername;
     private NotificationTypes type;
-    private String VideoTitle;
+    private String videoTitle;
 
     private Boolean isRead;
+    private Boolean isPushed;
 }
