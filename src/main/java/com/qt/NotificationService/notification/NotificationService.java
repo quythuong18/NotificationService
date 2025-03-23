@@ -22,7 +22,7 @@ import java.util.concurrent.Executors;
 public class NotificationService {
     private final WSHandler wsHandler;
     private final NotificationRepository notificationRepository;
-    private final ObjectMapper objectMapper = new ObjectMapper(); // this is for json converter
+    private final ObjectMapper objectMapper; // this is for json converter
     private static final Logger LOGGER = LoggerFactory.getLogger(NotificationService.class);
 
     public void pushNotification(NotificationEvent notificationEvent) {

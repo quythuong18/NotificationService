@@ -7,17 +7,19 @@ spring:
       uri: mongodb+srv://quythuong:rgaVxTGFcjdFu4Vc@cluster0.djxypwz.mongodb.net/
       port: '27017'
       database: notification_service
-    rabbitmq:
-      host: localhost
-      port: 5672
-      username: guest
-      password: guest
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
 
+server:
+  port: 8081
 logging:
   level:
     org:
       springframework:
-      web:
+        web:
         socket: DEBUG
         messaging: DEBUG
 
