@@ -21,6 +21,7 @@ public class WSHandler extends TextWebSocketHandler {
     private static final Map<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
 
     private final NotificationRepository notificationRepository;
+    private Object lock = new Object();
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
@@ -54,16 +55,19 @@ public class WSHandler extends TextWebSocketHandler {
     }
 
     public Boolean sendMessageToUser(String username, TextMessage message) {
-        WebSocketSession session = sessions.get(username);
-        if(session != null && session.isOpen()) {
-            try {
-                session.sendMessage(message);
-            } catch (IOException e) {
-                LOGGER.error(e.getMessage());
-                return false;
+        synchronized (lock) { // ensure atomicity
+            WebSocketSession session = sessions.get(username);
+            if(session != null && session.isOpen()) {
+                try {
+                    session.sendMessage(message);
+                } catch (IOException e) {
+                    LOGGER.error(e.getMessage());
+                    return false;
+                }
+                LOGGER.info("Message has been sent to user {}", username);
+                sessions.remove(username);
+                return true;
             }
-            LOGGER.info("Message has been sent to user {}", username);
-            return true;
         }
         LOGGER.info("User {} is not connected", username);
         return false;
