@@ -35,6 +35,7 @@ public class NotificationService {
                         .fromUsername(notificationEvent.getFromUsername())
                         .toUsername(username)
                         .type(notificationEvent.getType())
+                        .videoTitle(notificationEvent.getVideoTitle())
                         .isPushed(Boolean.FALSE)
                         .isRead(Boolean.FALSE)
                         .build();

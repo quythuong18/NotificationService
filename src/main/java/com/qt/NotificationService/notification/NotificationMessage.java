@@ -1,5 +1,6 @@
 package com.qt.NotificationService.notification;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.qt.NotificationService.utils.TimeAudit;
 import lombok.Builder;
 import lombok.Data;
@@ -21,5 +22,6 @@ public class NotificationMessage extends TimeAudit {
     private String videoTitle;
 
     private Boolean isRead;
+    @JsonIgnore
     private Boolean isPushed;
 }

@@ -1,6 +1,7 @@
 package com.qt.NotificationService.websocket;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.qt.NotificationService.notification.NotificationRepository;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -14,16 +15,22 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
+@RequiredArgsConstructor
 public class WSHandler extends TextWebSocketHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(WSHandler.class);
     private static final Map<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
-    private String username;
+
+    private final NotificationRepository notificationRepository;
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        username = (String) session.getAttributes().get("username");
+        String username = (String) session.getAttributes().get("username");
         sessions.put(username, session);
         LOGGER.info("User connected: {}", username);
+
+        // In this step, the user is online again, we will check the DB if there are
+        // any notifications to push to this user
+
     }
 
     @Override
@@ -35,6 +42,7 @@ public class WSHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+        String username = (String) session.getAttributes().get("username");
         sessions.remove(username);
         LOGGER.info("User disconnected: {}, Code: {}", (String) session.getAttributes().get("username"), status.getCode());
     }
