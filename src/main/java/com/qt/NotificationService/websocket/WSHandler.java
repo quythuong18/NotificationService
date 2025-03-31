@@ -32,7 +32,6 @@ public class WSHandler extends TextWebSocketHandler {
         // In this step, the user is online again, we will check the DB if there are
         // any notifications to push to this user
 
-
     }
 
     @Override

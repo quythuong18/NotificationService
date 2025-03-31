@@ -18,8 +18,11 @@ public class NotificationMessage extends TimeAudit {
     private ObjectId id;
     private String fromUsername;
     private String toUsername;
+
+    private String message;
+
     private NotificationTypes type;
-    private String videoTitle;
+    private Metadata metadata;
 
     private Boolean isRead;
     @JsonIgnore

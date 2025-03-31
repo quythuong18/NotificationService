@@ -29,15 +29,29 @@ public class NotificationService {
         List<String> usernamelist = new CopyOnWriteArrayList<>(notificationEvent.getToUsernames());
         ExecutorService executor = Executors.newFixedThreadPool(12);
 
+        // create the message for the notification for each user
+        String notificationMsg = createNotificationMessage(notificationEvent);
+        /*
+            {
+              "fromUsername": "qt",
+              "toUsernames": ["quythuong18"],
+              "type": "NEW_VIDEO",
+              "metadata": {
+                "videoId": "123",
+                "videoTitle": "Me in US"
+              }
+            }
+        * */
         for(String username : usernamelist) {
             executor.submit(() -> {
                 NotificationMessage notificationMessage = NotificationMessage.builder()
                         .fromUsername(notificationEvent.getFromUsername())
                         .toUsername(username)
                         .type(notificationEvent.getType())
-                        .videoTitle(notificationEvent.getVideoTitle())
+                        .metadata(notificationEvent.getMetadata())
                         .isPushed(Boolean.FALSE)
                         .isRead(Boolean.FALSE)
+                        .message(createNotificationMessage(notificationEvent))
                         .build();
                 String jsonMessage = null;
                 // map to json
@@ -58,5 +72,22 @@ public class NotificationService {
                 notificationRepository.save(notificationMessage);
             });
         }
+    }
+
+    public String createNotificationMessage(NotificationEvent notificationEvent) {
+        String message = "";
+        switch (notificationEvent.getType()) {
+            case FOLLOW -> message = notificationEvent.getFromUsername() + " starts following you";
+            case NEW_VIDEO -> message = notificationEvent.getFromUsername() + " uploaded a new video: " +
+                    notificationEvent.getMetadata().getVideoTitle();
+            case COMMENT_ON_VIDEO -> message = notificationEvent.getFromUsername() + " commented on your video: " +
+                    notificationEvent.getMetadata().getComment();
+            case LIKE_VIDEO -> message = notificationEvent.getFromUsername() + " liked your video" +
+                    notificationEvent.getMetadata().getVideoTitle();
+            case LIKE_COMMENT -> message = notificationEvent.getFromUsername() + " liked your comment" +
+                    notificationEvent.getMetadata().getComment();
+        }
+
+        return message;
     }
 }

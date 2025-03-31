@@ -1,5 +1,6 @@
 package com.qt.NotificationService.event;
 
+import com.qt.NotificationService.notification.Metadata;
 import com.qt.NotificationService.notification.NotificationTypes;
 import lombok.Data;
 
@@ -11,5 +12,5 @@ public class NotificationEvent {
     private String fromUsername;
     private List<String> toUsernames;
     private NotificationTypes type;
-    private String videoTitle;
+    private Metadata metadata;
 }
