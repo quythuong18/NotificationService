@@ -22,7 +22,7 @@ public class NotificationMessage extends TimeAudit {
     private String message;
 
     private NotificationTypes type;
-    private Metadata metadata;
+    private NotiMetadata notiMetadata;
 
     private Boolean isRead;
     @JsonIgnore

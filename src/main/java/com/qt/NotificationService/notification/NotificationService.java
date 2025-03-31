@@ -48,7 +48,7 @@ public class NotificationService {
                         .fromUsername(notificationEvent.getFromUsername())
                         .toUsername(username)
                         .type(notificationEvent.getType())
-                        .metadata(notificationEvent.getMetadata())
+                        .notiMetadata(notificationEvent.getNotiMetadata())
                         .isPushed(Boolean.FALSE)
                         .isRead(Boolean.FALSE)
                         .message(createNotificationMessage(notificationEvent))
@@ -79,13 +79,13 @@ public class NotificationService {
         switch (notificationEvent.getType()) {
             case FOLLOW -> message = notificationEvent.getFromUsername() + " starts following you";
             case NEW_VIDEO -> message = notificationEvent.getFromUsername() + " uploaded a new video: " +
-                    notificationEvent.getMetadata().getVideoTitle();
+                    notificationEvent.getNotiMetadata().getVideoTitle();
             case COMMENT_ON_VIDEO -> message = notificationEvent.getFromUsername() + " commented on your video: " +
-                    notificationEvent.getMetadata().getComment();
+                    notificationEvent.getNotiMetadata().getComment();
             case LIKE_VIDEO -> message = notificationEvent.getFromUsername() + " liked your video" +
-                    notificationEvent.getMetadata().getVideoTitle();
+                    notificationEvent.getNotiMetadata().getVideoTitle();
             case LIKE_COMMENT -> message = notificationEvent.getFromUsername() + " liked your comment" +
-                    notificationEvent.getMetadata().getComment();
+                    notificationEvent.getNotiMetadata().getComment();
         }
 
         return message;
