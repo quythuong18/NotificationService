@@ -1,9 +1,12 @@
 package com.qt.NotificationService.websocket;
 
 import com.qt.NotificationService.notification.NotificationRepository;
+import com.qt.NotificationService.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -20,7 +23,9 @@ public class WSHandler extends TextWebSocketHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(WSHandler.class);
     private static final Map<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
 
-    private final NotificationRepository notificationRepository;
+    @Lazy
+    @Autowired
+    private NotificationService notificationService;
     private Object lock = new Object();
 
     @Override
@@ -31,6 +36,7 @@ public class WSHandler extends TextWebSocketHandler {
 
         // In this step, the user is online again, we will check the DB if there are
         // any notifications to push to this user
+        notificationService.resendNotification(username);
 
     }
 

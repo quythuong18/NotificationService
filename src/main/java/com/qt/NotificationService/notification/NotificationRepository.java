@@ -6,6 +6,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;
 
 public interface NotificationRepository extends MongoRepository<NotificationMessage, String> {
-    List<NotificationEvent> findByToUsernameAndIsPushed(String username, Boolean isPushed);
-    List<NotificationEvent> findByToUsername(String username, Boolean isPushed);
+    List<NotificationMessage> findByToUsernameAndIsPushed(String username, Boolean isPushed);
+    List<NotificationMessage> findByToUsername(String username, Boolean isPushed);
 }

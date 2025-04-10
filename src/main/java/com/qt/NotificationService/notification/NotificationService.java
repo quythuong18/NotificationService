@@ -8,10 +8,13 @@ import com.qt.NotificationService.websocket.WSHandler;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -25,6 +28,24 @@ public class NotificationService {
     private final ObjectMapper objectMapper; // this is for json converter
     private static final Logger LOGGER = LoggerFactory.getLogger(NotificationService.class);
 
+    @Async
+    public void resendNotification(String username) {
+        List<NotificationMessage> notificationList =
+            notificationRepository.findByToUsernameAndIsPushed(username, Boolean.FALSE);
+
+        // prioritize sending noti to user
+        for(NotificationMessage noti : notificationList) {
+            if(wsHandler.sendMessageToUser(username, new TextMessage(notificationMessagetoJsonString(noti)))) {
+                noti.setIsPushed(Boolean.TRUE);
+            }
+        }
+
+        for(NotificationMessage noti : notificationList) {
+            if(noti.getIsPushed() == Boolean.TRUE)
+                notificationRepository.save(noti);
+        }
+    }
+
     public void pushNotification(NotificationEvent notificationEvent) {
         List<String> usernamelist = new CopyOnWriteArrayList<>(notificationEvent.getToUsernames());
         ExecutorService executor = Executors.newFixedThreadPool(12);
@@ -34,13 +55,12 @@ public class NotificationService {
         /*
             {
               "fromUsername": "qt",
-              "toUsernames": ["quythuong18"],
+              "toUsernames": ["quythuong"],
               "type": "NEW_VIDEO",
               "metadata": {
                 "videoId": "123",
-                "videoTitle": "Me in US"
-              }
-            }
+                "videoTitle": "Me in the US"
+             }
         * */
         for(String username : usernamelist) {
             executor.submit(() -> {
@@ -53,16 +73,9 @@ public class NotificationService {
                         .isRead(Boolean.FALSE)
                         .message(createNotificationMessage(notificationEvent))
                         .build();
-                String jsonMessage = null;
-                // map to json
-                try {
-                    jsonMessage = objectMapper.writeValueAsString(notificationMessage);
-                } catch (JsonProcessingException e) {
-                    throw new RuntimeException(e);
-                }
 
-                if(wsHandler.isConnected(username) &&
-                        wsHandler.sendMessageToUser(username, new TextMessage(jsonMessage))) {
+                if(wsHandler.isConnected(username) && wsHandler.sendMessageToUser(username,
+                                new TextMessage(notificationMessagetoJsonString(notificationMessage)))) {
                     LOGGER.info("Notification pushed to {}", username);
                     notificationMessage.setIsPushed(Boolean.TRUE);
                 }
@@ -89,5 +102,15 @@ public class NotificationService {
         }
 
         return message;
+    }
+    public String notificationMessagetoJsonString(NotificationMessage notiMsg) {
+        String jsonMessage = null;
+        // map to json
+        try {
+            jsonMessage = objectMapper.writeValueAsString(notiMsg);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        return jsonMessage;
     }
 }

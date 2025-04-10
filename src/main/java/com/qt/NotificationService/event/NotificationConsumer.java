@@ -19,7 +19,7 @@ public class NotificationConsumer {
     @RabbitListener(queues = {"${rabbitmq.queue.name}"})
     public void consumeMessage(String jsonNotificationPayLoad) throws JsonProcessingException {
         NotificationEvent event = objectMapper.readValue(jsonNotificationPayLoad, NotificationEvent.class);
-        notificationService.pushNotification(event);
         LOGGER.info("Received message: {}", event.toString());
+        notificationService.pushNotification(event);
     }
 }
