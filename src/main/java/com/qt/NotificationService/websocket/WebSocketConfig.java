@@ -16,14 +16,9 @@ public class WebSocketConfig implements WebSocketConfigurer {
     private final WSHandler wsHandler;
     private final WSKeyAuthInterceptor wsKeyAuthInterceptor;
 
-//    @Bean
-//    public ServerEndpointExporter serverEndpointExporter() {
-//        return new ServerEndpointExporter();
-//    }
-
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(wsHandler, "/ws")
+        registry.addHandler(wsHandler, "/ws/notification")
                 .setAllowedOrigins("*")
                 .addInterceptors(wsKeyAuthInterceptor);
     }
