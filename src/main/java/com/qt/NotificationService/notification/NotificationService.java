@@ -82,16 +82,16 @@ public class NotificationService {
         }
     }
 
-    public void sendToWSEndPoint(String username, NotificationMessage NotiMsg) {
+    public void sendToWSEndPoint(String username, NotificationMessage notiMsg) {
         if(wsHandler.isConnected(username) && wsHandler.sendMessageToUser(username,
-                new TextMessage(notificationMessagetoJsonString(NotiMsg)))) {
+                new TextMessage(notificationMessagetoJsonString(notiMsg)))) {
             LOGGER.info("Notification pushed to {}", username);
-            NotiMsg.setIsPushed(Boolean.TRUE);
+            notiMsg.setIsPushed(Boolean.TRUE);
         }
         else {
             LOGGER.info("Notification was not pushed because {} is not online", username);
         }
-        notificationRepository.save(NotiMsg);
+        notificationRepository.save(notiMsg);
     }
 
     public String createNotificationMessage(NotificationEvent notificationEvent) {
@@ -102,7 +102,7 @@ public class NotificationService {
                     notificationEvent.getNotiMetadata().getVideoTitle();
             case COMMENT_ON_VIDEO -> message = notificationEvent.getFromUsername() + " commented on your video: " +
                     notificationEvent.getNotiMetadata().getComment();
-            case LIKE_VIDEO -> message = notificationEvent.getFromUsername() + " liked your video" +
+            case LIKE_VIDEO -> message = notificationEvent.getFromUsername() + " liked your video: " +
                     notificationEvent.getNotiMetadata().getVideoTitle();
             case LIKE_COMMENT -> message = notificationEvent.getFromUsername() + " liked your comment" +
                     notificationEvent.getNotiMetadata().getComment();

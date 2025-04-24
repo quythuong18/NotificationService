@@ -5,6 +5,7 @@ import com.qt.NotificationService.notification.NotificationMessage;
 import com.qt.NotificationService.notification.NotificationService;
 import com.qt.NotificationService.notification.NotificationTypes;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -12,6 +13,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @AllArgsConstructor
+@Component("NEW_VIDEO")
 public class NewVideoNotificationPushing implements INotificationPushingStrategy {
     private final NotificationService notificationService;
     @Override
