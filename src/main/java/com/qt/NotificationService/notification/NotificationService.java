@@ -50,18 +50,21 @@ public class NotificationService {
         List<String> usernamelist = new CopyOnWriteArrayList<>(notificationEvent.getToUsernames());
         ExecutorService executor = Executors.newFixedThreadPool(12);
 
+        // the special case: send video upload completion notification to video owner
+        if(notificationEvent.getType() == NotificationTypes.NEW_VIDEO) {
+            NotificationMessage notificationMessage = NotificationMessage.builder()
+                    .fromUsername(notificationEvent.getFromUsername())
+                    .toUsername(notificationEvent.getFromUsername())
+                    .isPushed(Boolean.FALSE)
+                    .isRead(Boolean.FALSE)
+                    .message("Your video uploaded successfully")
+                    .build();
+            sendToWSEndPoint(notificationEvent.getFromUsername(), notificationMessage);
+        }
+
         // create the message for the notification for each user
-        String notificationMsg = createNotificationMessage(notificationEvent);
-        /*
-            {
-              "fromUsername": "qt",
-              "toUsernames": ["quythuong"],
-              "type": "NEW_VIDEO",
-              "metadata": {
-                "videoId": "123",
-                "videoTitle": "Me in the US"
-             }
-        * */
+        String notificationStringMsg = createNotificationMessage(notificationEvent);
+
         for(String username : usernamelist) {
             executor.submit(() -> {
                 NotificationMessage notificationMessage = NotificationMessage.builder()
@@ -71,20 +74,24 @@ public class NotificationService {
                         .notiMetadata(notificationEvent.getNotiMetadata())
                         .isPushed(Boolean.FALSE)
                         .isRead(Boolean.FALSE)
-                        .message(createNotificationMessage(notificationEvent))
+                        .message(notificationStringMsg)
                         .build();
 
-                if(wsHandler.isConnected(username) && wsHandler.sendMessageToUser(username,
-                                new TextMessage(notificationMessagetoJsonString(notificationMessage)))) {
-                    LOGGER.info("Notification pushed to {}", username);
-                    notificationMessage.setIsPushed(Boolean.TRUE);
-                }
-                else {
-                    LOGGER.info("Notification was not pushed because {} is not online or some errors occur", username);
-                }
-                notificationRepository.save(notificationMessage);
+                sendToWSEndPoint(username, notificationMessage);
             });
         }
+    }
+
+    public void sendToWSEndPoint(String username, NotificationMessage NotiMsg) {
+        if(wsHandler.isConnected(username) && wsHandler.sendMessageToUser(username,
+                new TextMessage(notificationMessagetoJsonString(NotiMsg)))) {
+            LOGGER.info("Notification pushed to {}", username);
+            NotiMsg.setIsPushed(Boolean.TRUE);
+        }
+        else {
+            LOGGER.info("Notification was not pushed because {} is not online", username);
+        }
+        notificationRepository.save(NotiMsg);
     }
 
     public String createNotificationMessage(NotificationEvent notificationEvent) {
