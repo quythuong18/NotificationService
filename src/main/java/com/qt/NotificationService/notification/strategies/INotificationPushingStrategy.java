@@ -1,7 +1,6 @@
-package com.qt.NotificationService.notification;
+package com.qt.NotificationService.notification.strategies;
 
 import com.qt.NotificationService.event.NotificationEvent;
-import lombok.AllArgsConstructor;
 
 public interface INotificationPushingStrategy {
     void push(NotificationEvent notificationEvent);

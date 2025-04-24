@@ -1,6 +1,9 @@
-package com.qt.NotificationService.notification;
+package com.qt.NotificationService.notification.strategies;
 
 import com.qt.NotificationService.event.NotificationEvent;
+import com.qt.NotificationService.notification.NotificationMessage;
+import com.qt.NotificationService.notification.NotificationService;
+import com.qt.NotificationService.notification.NotificationTypes;
 import lombok.AllArgsConstructor;
 
 import java.util.List;
