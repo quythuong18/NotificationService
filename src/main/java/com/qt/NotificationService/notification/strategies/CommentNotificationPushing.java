@@ -21,6 +21,7 @@ public class CommentNotificationPushing implements INotificationPushingStrategy 
                 .isPushed(Boolean.FALSE)
                 .isRead(Boolean.FALSE)
                 .message(notificationService.createNotificationMessage(notificationEvent))
+                .notiMetadata(notificationEvent.getNotiMetadata())
                 .build();
         for(String username : notificationEvent.getToUsernames()) {
             if(username.equals(notificationEvent.getFromUsername())) continue;

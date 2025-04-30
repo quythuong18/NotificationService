@@ -25,6 +25,7 @@ public class NotificationConsumer {
     public void consumeMessage(String jsonNotificationPayLoad) throws JsonProcessingException {
         NotificationEvent event = objectMapper.readValue(jsonNotificationPayLoad, NotificationEvent.class);
         LOGGER.info("Received message: {}", event.toString());
-        notiStrategiesMap.get(event.getType()).push(event);
+        INotificationPushingStrategy iNotificationPushingStrategy = notiStrategiesMap.get(event.getType().toString());
+        iNotificationPushingStrategy.push(event);
     }
 }

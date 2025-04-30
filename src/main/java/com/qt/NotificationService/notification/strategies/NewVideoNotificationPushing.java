@@ -34,18 +34,19 @@ public class NewVideoNotificationPushing implements INotificationPushingStrategy
         String notificationStringMsg = notificationService.createNotificationMessage(notificationEvent);
 
         List<String> usernamelist = new CopyOnWriteArrayList<>(notificationEvent.getToUsernames());
+
+        NotificationMessage notificationMessage = NotificationMessage.builder()
+                .fromUsername(notificationEvent.getFromUsername())
+                .type(notificationEvent.getType())
+                .notiMetadata(notificationEvent.getNotiMetadata())
+                .isPushed(Boolean.FALSE)
+                .isRead(Boolean.FALSE)
+                .message(notificationStringMsg)
+                .build();
         ExecutorService executor = Executors.newFixedThreadPool(12);
         for(String username : usernamelist) {
             executor.submit(() -> {
-                NotificationMessage notificationMessage = NotificationMessage.builder()
-                        .fromUsername(notificationEvent.getFromUsername())
-                        .toUsername(username)
-                        .type(notificationEvent.getType())
-                        .notiMetadata(notificationEvent.getNotiMetadata())
-                        .isPushed(Boolean.FALSE)
-                        .isRead(Boolean.FALSE)
-                        .message(notificationStringMsg)
-                        .build();
+                 notificationMessage.setToUsername(username);
 
                 notificationService.sendToWSEndPoint(username, notificationMessage);
             });

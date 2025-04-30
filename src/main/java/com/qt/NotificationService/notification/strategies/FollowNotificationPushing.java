@@ -4,7 +4,6 @@ import com.qt.NotificationService.event.NotificationEvent;
 import com.qt.NotificationService.notification.NotificationMessage;
 import com.qt.NotificationService.notification.NotificationService;
 import com.qt.NotificationService.notification.NotificationTypes;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +22,7 @@ public class FollowNotificationPushing implements INotificationPushingStrategy {
                 .isPushed(Boolean.FALSE)
                 .isRead(Boolean.FALSE)
                 .message(notificationService.createNotificationMessage(notificationEvent))
+                .notiMetadata(notificationEvent.getNotiMetadata())
                 .build();
         notificationService.sendToWSEndPoint(notificationEvent.getToUsernames().get(0), notificationMessage);
     }

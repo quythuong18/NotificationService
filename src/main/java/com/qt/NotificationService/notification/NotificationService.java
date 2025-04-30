@@ -37,12 +37,8 @@ public class NotificationService {
         for(NotificationMessage noti : notificationList) {
             if(wsHandler.sendMessageToUser(username, new TextMessage(notificationMessagetoJsonString(noti)))) {
                 noti.setIsPushed(Boolean.TRUE);
-            }
-        }
-
-        for(NotificationMessage noti : notificationList) {
-            if(noti.getIsPushed() == Boolean.TRUE)
                 notificationRepository.save(noti);
+            }
         }
     }
 

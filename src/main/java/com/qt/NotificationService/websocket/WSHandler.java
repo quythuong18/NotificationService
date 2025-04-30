@@ -61,19 +61,16 @@ public class WSHandler extends TextWebSocketHandler {
     }
 
     public Boolean sendMessageToUser(String username, TextMessage message) {
-        synchronized (lock) { // ensure atomicity
-            WebSocketSession session = sessions.get(username);
-            if(session != null && session.isOpen()) {
-                try {
-                    session.sendMessage(message);
-                } catch (IOException e) {
-                    LOGGER.error(e.getMessage());
-                    return false;
-                }
-                LOGGER.info("Message has been sent to user {}", username);
-                sessions.remove(username);
-                return true;
+        WebSocketSession session = sessions.get(username);
+        if(session != null && session.isOpen()) {
+            try {
+                session.sendMessage(message);
+            } catch (IOException e) {
+                LOGGER.error(e.getMessage());
+                return false;
             }
+            LOGGER.info("Message has been sent to user {}", username);
+            return true;
         }
         LOGGER.info("User {} is not connected", username);
         return false;

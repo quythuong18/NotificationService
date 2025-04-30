@@ -41,6 +41,7 @@ public class LikeVideoNotificationPushing implements INotificationPushingStrateg
                 .isPushed(Boolean.FALSE)
                 .isRead(Boolean.FALSE)
                 .message(notificationService.createNotificationMessage(notificationEvent))
+                .notiMetadata(notificationEvent.getNotiMetadata())
                 .build();
         notificationService.sendToWSEndPoint(toUsername, notificationMessage);
     }
