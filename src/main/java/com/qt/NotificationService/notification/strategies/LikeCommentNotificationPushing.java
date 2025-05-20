@@ -30,7 +30,7 @@ public class LikeCommentNotificationPushing implements INotificationPushingStrat
         if(existentNotiMsgOptional.isPresent()) {
             notificationMessage = existentNotiMsgOptional.get();
             notificationMessage.setMessage(fromUsername + " and others like your comment");
-            notificationService.sendToWSEndPoint(toUsername, notificationMessage);
+            notificationService.sendNoti(toUsername, notificationMessage);
             return;
         }
 
@@ -42,6 +42,6 @@ public class LikeCommentNotificationPushing implements INotificationPushingStrat
                 .message(notificationService.createNotificationMessage(notificationEvent))
                 .notiMetadata(notificationEvent.getNotiMetadata())
                 .build();
-        notificationService.sendToWSEndPoint(toUsername, notificationMessage);
+        notificationService.sendNoti(toUsername, notificationMessage);
     }
 }

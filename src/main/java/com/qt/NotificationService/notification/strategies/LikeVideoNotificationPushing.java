@@ -31,7 +31,7 @@ public class LikeVideoNotificationPushing implements INotificationPushingStrateg
             notificationMessage = existentNotiMsgOptional.get();
             notificationMessage.setMessage(fromUsername + " and others like your video: "
                     + notificationEvent.getNotiMetadata().getVideoTitle());
-            notificationService.sendToWSEndPoint(toUsername, notificationMessage);
+            notificationService.sendNoti(toUsername, notificationMessage);
             return;
         }
 
@@ -43,6 +43,6 @@ public class LikeVideoNotificationPushing implements INotificationPushingStrateg
                 .message(notificationService.createNotificationMessage(notificationEvent))
                 .notiMetadata(notificationEvent.getNotiMetadata())
                 .build();
-        notificationService.sendToWSEndPoint(toUsername, notificationMessage);
+        notificationService.sendNoti(toUsername, notificationMessage);
     }
 }

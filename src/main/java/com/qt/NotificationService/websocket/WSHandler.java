@@ -1,6 +1,5 @@
 package com.qt.NotificationService.websocket;
 
-import com.qt.NotificationService.notification.NotificationRepository;
 import com.qt.NotificationService.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;

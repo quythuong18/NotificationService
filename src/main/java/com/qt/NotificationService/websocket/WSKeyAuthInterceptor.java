@@ -29,7 +29,6 @@ public class WSKeyAuthInterceptor implements HandshakeInterceptor {
             String username = query.split("username=")[1].split("&")[0];
 
             String key = serverRequest.getServletRequest().getHeader("token");
-            LOGGER.warn(key);
 
             // using JWT to validate
             try {

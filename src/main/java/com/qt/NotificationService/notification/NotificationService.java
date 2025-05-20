@@ -2,6 +2,10 @@ package com.qt.NotificationService.notification;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.qt.NotificationService.FCM.FCMPushNotificationServiceRequest;
+import com.qt.NotificationService.FCM.FCMService;
+import com.qt.NotificationService.FCM.IUserFCMTokenRepository;
+import com.qt.NotificationService.FCM.UserFCMToken;
 import com.qt.NotificationService.event.NotificationEvent;
 import com.qt.NotificationService.websocket.WSHandler;
 
@@ -12,18 +16,16 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.Optional;
 
 
 @Component
 @RequiredArgsConstructor
 public class NotificationService {
     private final WSHandler wsHandler;
+    private final FCMService fcmService;
+    private final IUserFCMTokenRepository iUserFCMTokenRepository;
     private final NotificationRepository notificationRepository;
     private final ObjectMapper objectMapper; // this is for json converter
     private static final Logger LOGGER = LoggerFactory.getLogger(NotificationService.class);
@@ -42,43 +44,11 @@ public class NotificationService {
         }
     }
 
-    public void pushNotification(NotificationEvent notificationEvent) {
-        List<String> usernamelist = new CopyOnWriteArrayList<>(notificationEvent.getToUsernames());
-        ExecutorService executor = Executors.newFixedThreadPool(12);
-
-        // the special case: send video upload completion notification to video owner
-        if(notificationEvent.getType() == NotificationTypes.NEW_VIDEO) {
-            NotificationMessage notificationMessage = NotificationMessage.builder()
-                    .fromUsername(notificationEvent.getFromUsername())
-                    .toUsername(notificationEvent.getFromUsername())
-                    .isPushed(Boolean.FALSE)
-                    .isRead(Boolean.FALSE)
-                    .message("Your video uploaded successfully")
-                    .build();
-            sendToWSEndPoint(notificationEvent.getFromUsername(), notificationMessage);
-        }
-
-        // create the message for the notification for each user
-        String notificationStringMsg = createNotificationMessage(notificationEvent);
-
-        for(String username : usernamelist) {
-            executor.submit(() -> {
-                NotificationMessage notificationMessage = NotificationMessage.builder()
-                        .fromUsername(notificationEvent.getFromUsername())
-                        .toUsername(username)
-                        .type(notificationEvent.getType())
-                        .notiMetadata(notificationEvent.getNotiMetadata())
-                        .isPushed(Boolean.FALSE)
-                        .isRead(Boolean.FALSE)
-                        .message(notificationStringMsg)
-                        .build();
-
-                sendToWSEndPoint(username, notificationMessage);
-            });
-        }
+    public void sendNoti(String username, NotificationMessage notiMsg) throws JsonProcessingException {
+        sendToUserByFCM(username, notiMsg);
     }
 
-    public void sendToWSEndPoint(String username, NotificationMessage notiMsg) {
+    public void sendToWSEndpoint(String username, NotificationMessage notiMsg) {
         if(wsHandler.isConnected(username) && wsHandler.sendMessageToUser(username,
                 new TextMessage(notificationMessagetoJsonString(notiMsg)))) {
             LOGGER.info("Notification pushed to {}", username);
@@ -88,6 +58,23 @@ public class NotificationService {
             LOGGER.info("Notification was not pushed because {} is not online", username);
         }
         notificationRepository.save(notiMsg);
+    }
+
+    public void sendToUserByFCM(String username, NotificationMessage notiMsg) {
+        String content;
+        try {
+            content = objectMapper.writeValueAsString(notiMsg);
+        } catch (JsonProcessingException e) { throw new RuntimeException(e); }
+        FCMPushNotificationServiceRequest request = new FCMPushNotificationServiceRequest();
+
+
+        Optional<UserFCMToken> userFCMTokenOptional = iUserFCMTokenRepository.findByUsername(username);
+        if(userFCMTokenOptional.isEmpty())
+            throw new IllegalArgumentException("User token does not exist");
+
+        request.setFcmToken(userFCMTokenOptional.get().getToken());
+        request.setContent(content);
+        fcmService.pushNotification(request);
     }
 
     public String createNotificationMessage(NotificationEvent notificationEvent) {

@@ -34,4 +34,5 @@ build/
 
 ### Others
 .env
+src/main/resources/notificationservicefcm-1e60f-firebase-adminsdk-fbsvc-dbd2096a61.json
 

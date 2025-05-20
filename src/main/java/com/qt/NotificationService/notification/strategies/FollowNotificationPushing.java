@@ -24,6 +24,6 @@ public class FollowNotificationPushing implements INotificationPushingStrategy {
                 .message(notificationService.createNotificationMessage(notificationEvent))
                 .notiMetadata(notificationEvent.getNotiMetadata())
                 .build();
-        notificationService.sendToWSEndPoint(notificationEvent.getToUsernames().get(0), notificationMessage);
+        notificationService.sendNoti(notificationEvent.getToUsernames().get(0), notificationMessage);
     }
 }

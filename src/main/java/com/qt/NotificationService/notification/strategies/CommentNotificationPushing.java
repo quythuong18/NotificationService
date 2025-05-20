@@ -27,7 +27,7 @@ public class CommentNotificationPushing implements INotificationPushingStrategy 
             if(username.equals(notificationEvent.getFromUsername())) continue;
 
             notificationMessage.setToUsername(username);
-            notificationService.sendToWSEndPoint(username, notificationMessage);
+            notificationService.sendNoti(username, notificationMessage);
         }
     }
 }

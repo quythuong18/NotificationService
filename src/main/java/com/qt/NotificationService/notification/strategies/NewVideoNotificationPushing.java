@@ -28,7 +28,7 @@ public class NewVideoNotificationPushing implements INotificationPushingStrategy
                 .isRead(Boolean.FALSE)
                 .message("Your video uploaded successfully")
                 .build();
-        notificationService.sendToWSEndPoint(notificationEvent.getFromUsername(), notificationMsgForVideoOwner);
+        notificationService.sendNoti(notificationEvent.getFromUsername(), notificationMsgForVideoOwner);
 
         // create the message for the notification for each follower users
         String notificationStringMsg = notificationService.createNotificationMessage(notificationEvent);
@@ -48,7 +48,7 @@ public class NewVideoNotificationPushing implements INotificationPushingStrategy
             executor.submit(() -> {
                  notificationMessage.setToUsername(username);
 
-                notificationService.sendToWSEndPoint(username, notificationMessage);
+                notificationService.sendNoti(username, notificationMessage);
             });
         }
     }
