@@ -4,6 +4,8 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -12,8 +14,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class FCMService {
     private final IUserFCMTokenRepository iUserFCMTokenRepository;
+    private static final Logger LOGGER = LoggerFactory.getLogger(FCMService.class);
 
-    public String pushNotification(FCMPushNotificationServiceRequest fCMpnsRequest) {
+    public void pushNotification(FCMPushNotificationServiceRequest fCMpnsRequest) {
         Message message = Message.builder()
                 .putData("content", fCMpnsRequest.getContent())
                 .setToken(fCMpnsRequest.getFcmToken())
@@ -23,9 +26,8 @@ public class FCMService {
         try {
             response = FirebaseMessaging.getInstance().send(message);
         } catch (FirebaseMessagingException e) {
-            e.printStackTrace();
+            LOGGER.error(e.toString());
         }
-        return response;
     }
 
     public UserFCMToken registerFCMToken(UserFCMToken userFCMToken) {

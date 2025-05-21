@@ -44,7 +44,7 @@ public class NotificationService {
         }
     }
 
-    public void sendNoti(String username, NotificationMessage notiMsg) throws JsonProcessingException {
+    public void sendNoti(String username, NotificationMessage notiMsg) {
         sendToUserByFCM(username, notiMsg);
     }
 
