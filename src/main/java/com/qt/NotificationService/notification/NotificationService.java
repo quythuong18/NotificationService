@@ -46,6 +46,7 @@ public class NotificationService {
 
     public void sendNoti(String username, NotificationMessage notiMsg) {
         sendToUserByFCM(username, notiMsg);
+        sendToWSEndpoint(username, notiMsg);
     }
 
     public void sendToWSEndpoint(String username, NotificationMessage notiMsg) {

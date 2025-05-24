@@ -16,7 +16,7 @@ public class FCMService {
     private final IUserFCMTokenRepository iUserFCMTokenRepository;
     private static final Logger LOGGER = LoggerFactory.getLogger(FCMService.class);
 
-    public void pushNotification(FCMPushNotificationServiceRequest fCMpnsRequest) {
+    public String pushNotification(FCMPushNotificationServiceRequest fCMpnsRequest) {
         Message message = Message.builder()
                 .putData("content", fCMpnsRequest.getContent())
                 .setToken(fCMpnsRequest.getFcmToken())
@@ -28,6 +28,8 @@ public class FCMService {
         } catch (FirebaseMessagingException e) {
             LOGGER.error(e.toString());
         }
+        LOGGER.info(response);
+        return response;
     }
 
     public UserFCMToken registerFCMToken(UserFCMToken userFCMToken) {
