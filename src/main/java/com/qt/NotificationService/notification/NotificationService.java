@@ -70,8 +70,11 @@ public class NotificationService {
 
 
         Optional<UserFCMToken> userFCMTokenOptional = iUserFCMTokenRepository.findByUsername(username);
-        if(userFCMTokenOptional.isEmpty())
-            throw new IllegalArgumentException("User token does not exist");
+
+        if(userFCMTokenOptional.isEmpty()) {
+            LOGGER.warn("{} token does not exist", username);
+            return;
+        }
 
         request.setFcmToken(userFCMTokenOptional.get().getToken());
         request.setContent(content);

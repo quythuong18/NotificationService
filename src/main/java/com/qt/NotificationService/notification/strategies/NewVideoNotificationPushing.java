@@ -26,6 +26,7 @@ public class NewVideoNotificationPushing implements INotificationPushingStrategy
                 .toUsername(notificationEvent.getFromUsername()) // owner
                 .isPushed(Boolean.FALSE)
                 .isRead(Boolean.FALSE)
+                .type(notificationEvent.getType())
                 .message("Your video uploaded successfully")
                 .build();
         notificationService.sendNoti(notificationEvent.getFromUsername(), notificationMsgForVideoOwner);

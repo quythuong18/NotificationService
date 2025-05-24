@@ -20,6 +20,8 @@ public class NotificationMessage extends TimeAudit {
     @JsonSerialize(using = ToStringSerializer.class)
     private ObjectId id;
     private String fromUsername;
+    private String fromUserProfilePic;
+
     private String toUsername;
 
     private String message;

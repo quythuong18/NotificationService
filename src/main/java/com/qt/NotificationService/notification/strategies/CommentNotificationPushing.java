@@ -20,6 +20,7 @@ public class CommentNotificationPushing implements INotificationPushingStrategy 
                 .fromUsername(notificationEvent.getFromUsername())
                 .isPushed(Boolean.FALSE)
                 .isRead(Boolean.FALSE)
+                .type(notificationEvent.getType())
                 .message(notificationService.createNotificationMessage(notificationEvent))
                 .notiMetadata(notificationEvent.getNotiMetadata())
                 .build();

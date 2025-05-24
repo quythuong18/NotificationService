@@ -6,6 +6,7 @@ import lombok.Data;
 public class NotiMetadata {
     private String videoId;
     private String videoTitle;
+    private String thumbnailUrl;
 
     private String commentId;
     private String comment;

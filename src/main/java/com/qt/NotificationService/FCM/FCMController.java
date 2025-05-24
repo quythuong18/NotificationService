@@ -6,7 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RestController("/api/v1/notification")
+@RestController
+@RequestMapping("/api/v1/notifications")
 @RequiredArgsConstructor
 public class FCMController {
     private final FCMService fcmService;

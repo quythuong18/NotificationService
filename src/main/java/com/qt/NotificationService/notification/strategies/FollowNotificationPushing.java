@@ -21,6 +21,7 @@ public class FollowNotificationPushing implements INotificationPushingStrategy {
                 .toUsername(notificationEvent.getToUsernames().get(0)) // following feature just send to 1 user
                 .isPushed(Boolean.FALSE)
                 .isRead(Boolean.FALSE)
+                .type(notificationEvent.getType())
                 .message(notificationService.createNotificationMessage(notificationEvent))
                 .notiMetadata(notificationEvent.getNotiMetadata())
                 .build();

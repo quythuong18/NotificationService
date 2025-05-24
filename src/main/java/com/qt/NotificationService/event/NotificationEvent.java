@@ -10,6 +10,7 @@ import java.util.List;
 public class NotificationEvent {
     public NotificationEvent() {}
     private String fromUsername;
+    private String fromUserProfilePic;
     private List<String> toUsernames;
     private NotificationTypes type;
     private NotiMetadata notiMetadata;
