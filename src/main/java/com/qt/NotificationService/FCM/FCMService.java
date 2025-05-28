@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -32,16 +34,39 @@ public class FCMService {
         return response;
     }
 
-    public UserFCMToken registerFCMToken(UserFCMToken userFCMToken) {
+    public UserFCMToken addNewFCMToken(String token, String username) {
+        Optional<UserFCMToken> userFCMTokenOptional = iUserFCMTokenRepository.findByUsername(username);
+        if(userFCMTokenOptional.isEmpty()) {
+            UserFCMToken newUserFCMToken = new UserFCMToken();
+            newUserFCMToken.setUsername(username);
+
+            List<String> tokens = new ArrayList<>();
+            tokens.add(token);
+
+            newUserFCMToken.setTokens(tokens);
+            return iUserFCMTokenRepository.save(newUserFCMToken);
+        }
+        UserFCMToken userFCMToken = userFCMTokenOptional.get();
+        userFCMToken.getTokens().add(token);
         return iUserFCMTokenRepository.save(userFCMToken);
     }
 
-    public UserFCMToken updateFCMToken(UserFCMToken userFCMToken) {
-        Optional<UserFCMToken> userFCMTokenOptional = iUserFCMTokenRepository.findByUsername(userFCMToken.getUsername());
-        if(userFCMTokenOptional.isEmpty())
-            throw new IllegalArgumentException("Username in FCM Tokens db not found");
-        UserFCMToken newUserFCMToken = userFCMTokenOptional.get();
-        newUserFCMToken.setToken(userFCMToken.getToken());
-        return iUserFCMTokenRepository.save(newUserFCMToken);
+    public Boolean removeFCMToken(String token, String username) {
+        Optional<UserFCMToken> userFCMTokenOptional = iUserFCMTokenRepository.findByUsername(username);
+        if(userFCMTokenOptional.isEmpty()) {
+            LOGGER.warn("Username not found");
+            return Boolean.FALSE;
+        }
+        UserFCMToken userFCMToken = userFCMTokenOptional.get();
+        List<String> tokens = userFCMToken.getTokens();
+
+        Boolean isRemoved = tokens.remove(token);
+        // save
+        userFCMToken.setTokens(tokens);
+        iUserFCMTokenRepository.save(userFCMToken);
+
+        if(!isRemoved) LOGGER.warn("Token not found in the list");
+
+        return isRemoved;
     }
 }

@@ -12,12 +12,18 @@ import com.qt.NotificationService.websocket.WSHandler;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 @Component
@@ -66,8 +72,6 @@ public class NotificationService {
         try {
             content = objectMapper.writeValueAsString(notiMsg);
         } catch (JsonProcessingException e) { throw new RuntimeException(e); }
-        FCMPushNotificationServiceRequest request = new FCMPushNotificationServiceRequest();
-
 
         Optional<UserFCMToken> userFCMTokenOptional = iUserFCMTokenRepository.findByUsername(username);
 
@@ -76,9 +80,29 @@ public class NotificationService {
             return;
         }
 
-        request.setFcmToken(userFCMTokenOptional.get().getToken());
-        request.setContent(content);
-        fcmService.pushNotification(request);
+        List<String> tokens = userFCMTokenOptional.get().getTokens();
+//        for(String t : tokens) {
+//            request.setFcmToken(t);
+//            request.setContent(content);
+//            fcmService.pushNotification(request);
+//        }
+        ExecutorService executor = Executors.newFixedThreadPool(4);
+        for(String t : tokens) {
+            executor.submit(() -> {
+                FCMPushNotificationServiceRequest request = new FCMPushNotificationServiceRequest();
+                request.setFcmToken(t);
+                request.setContent(content);
+                fcmService.pushNotification(request);
+            });
+        }
+    }
+
+    public List<NotificationMessage> getNotificationMessage(String username, Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        Slice<NotificationMessage> pageNotifcationMsgs = notificationRepository
+                .findByToUsername(username, pageable);
+
+        return pageNotifcationMsgs.getContent();
     }
 
     public String createNotificationMessage(NotificationEvent notificationEvent) {
