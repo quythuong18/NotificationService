@@ -22,6 +22,7 @@ public class LikeCommentNotificationPushing implements INotificationPushingStrat
 
         String commentId = notificationEvent.getNotiMetadata().getCommentId();
         String fromUsername = notificationEvent.getFromUsername();
+        String fromUsernameProfilePic = notificationEvent.getFromUserProfilePic();
         String toUsername = notificationEvent.getToUsernames().get(0);
 
         NotificationMessage notificationMessage;
@@ -37,6 +38,7 @@ public class LikeCommentNotificationPushing implements INotificationPushingStrat
         notificationMessage = NotificationMessage.builder()
                 .fromUsername(fromUsername)
                 .fromUsername(toUsername)
+                .fromUserProfilePic(fromUsernameProfilePic)
                 .isPushed(Boolean.FALSE)
                 .isRead(Boolean.FALSE)
                 .type(notificationEvent.getType())

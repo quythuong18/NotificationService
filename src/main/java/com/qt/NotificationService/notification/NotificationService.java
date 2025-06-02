@@ -92,6 +92,7 @@ public class NotificationService {
                 FCMPushNotificationServiceRequest request = new FCMPushNotificationServiceRequest();
                 request.setFcmToken(t);
                 request.setContent(content);
+                LOGGER.info(content);
                 fcmService.pushNotification(request);
             });
         }

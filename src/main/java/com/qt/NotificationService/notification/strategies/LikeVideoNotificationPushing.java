@@ -22,6 +22,7 @@ public class LikeVideoNotificationPushing implements INotificationPushingStrateg
 
         String videoId = notificationEvent.getNotiMetadata().getVideoId();
         String fromUsername = notificationEvent.getFromUsername();
+        String fromUsernameProfilePic = notificationEvent.getFromUserProfilePic();
         String toUsername = notificationEvent.getToUsernames().get(0);
 
         NotificationMessage notificationMessage;
@@ -37,7 +38,8 @@ public class LikeVideoNotificationPushing implements INotificationPushingStrateg
 
         notificationMessage = NotificationMessage.builder()
                 .fromUsername(fromUsername)
-                .fromUsername(toUsername)
+                .fromUserProfilePic(fromUsernameProfilePic)
+                .toUsername(toUsername)
                 .isPushed(Boolean.FALSE)
                 .type(notificationEvent.getType())
                 .isRead(Boolean.FALSE)

@@ -18,6 +18,7 @@ public class CommentNotificationPushing implements INotificationPushingStrategy 
 
         NotificationMessage notificationMessage = NotificationMessage.builder()
                 .fromUsername(notificationEvent.getFromUsername())
+                .fromUserProfilePic(notificationEvent.getFromUserProfilePic())
                 .isPushed(Boolean.FALSE)
                 .isRead(Boolean.FALSE)
                 .type(notificationEvent.getType())

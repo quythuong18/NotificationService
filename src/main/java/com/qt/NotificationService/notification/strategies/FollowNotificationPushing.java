@@ -19,6 +19,7 @@ public class FollowNotificationPushing implements INotificationPushingStrategy {
         NotificationMessage notificationMessage = NotificationMessage.builder()
                 .fromUsername(notificationEvent.getFromUsername())
                 .toUsername(notificationEvent.getToUsernames().get(0)) // following feature just send to 1 user
+                .fromUserProfilePic(notificationEvent.getFromUserProfilePic())
                 .isPushed(Boolean.FALSE)
                 .isRead(Boolean.FALSE)
                 .type(notificationEvent.getType())

@@ -38,6 +38,7 @@ public class NewVideoNotificationPushing implements INotificationPushingStrategy
 
         NotificationMessage notificationMessage = NotificationMessage.builder()
                 .fromUsername(notificationEvent.getFromUsername())
+                .fromUserProfilePic(notificationEvent.getFromUserProfilePic())
                 .type(notificationEvent.getType())
                 .notiMetadata(notificationEvent.getNotiMetadata())
                 .isPushed(Boolean.FALSE)
